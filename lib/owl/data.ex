@@ -468,6 +468,38 @@ defmodule Owl.Data do
   defp trim_leading_blank_tags(result), do: result
 
   @doc """
+  Splits a string into two at the specified offset.
+
+  When `break_word?` is `false`, words located within the offset are not broken.
+  """
+  def split_at(value, index, break_word? \\ true)
+
+  def split_at(value, index, true) do
+    String.split_at(value, index)
+  end
+
+  def split_at(value, index, false) do
+    value
+    |> String.split()
+    |> Enum.reduce({"", ""}, fn
+      word, {"", rest} ->
+        {word, rest}
+
+      word, {head, ""} ->
+        sentence = "#{head} #{word}"
+
+        if String.length(sentence) > index do
+          {head, word}
+        else
+          {sentence, ""}
+        end
+
+      word, {head, rest} ->
+        {head, "#{rest} #{word}"}
+    end)
+  end
+
+  @doc """
   Returns list of `t()` containing `count` elements each.
 
   ## Example
