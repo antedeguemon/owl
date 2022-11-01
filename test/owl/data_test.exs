@@ -270,6 +270,19 @@ defmodule Owl.DataTest do
     end
   end
 
+  describe inspect(&Owl.Data.split_at/3) do
+    test "word break true" do
+      assert Owl.Data.split_at("hello there", 2, true) == {"he", "llo there"}
+      assert Owl.Data.split_at("hello there", 7, true) == {"hello t", "here"}
+    end
+
+    test "word break false" do
+      assert Owl.Data.split_at("hello there", 2, false) == {"hello", "there"}
+      assert Owl.Data.split_at("hello there goodbye", 7, false) == {"hello", "there goodbye"}
+      assert Owl.Data.split_at("hello there goodbye", 12, false) == {"hello there", "goodbye"}
+    end
+  end
+
   test inspect(&Owl.Data.to_ansidata/1) do
     assert Owl.Data.to_ansidata(["1", "2", ["3", "4"], "5"]) == [
              [[[[[], "1"], "2"], "3"], "4"],
